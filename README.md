@@ -6,6 +6,48 @@ ElastAlert 2 is backwards compatible with the original [ElastAlert][0] rules.
 
 ![CI Workflow](https://github.com/jertel/elastalert/workflows/master_build_test/badge.svg)
 
+## Deployment
+
+```
+# 1. ElastAlert .env
+$ cp .env.example .env
+# Edit Env Config Vars ...
+
+# 2. ElastAlert Configuration
+$ cp elastalert.yaml.example elastalert.yaml
+# OR:
+$ cp elastalert.yaml.simple elastalert.yaml
+# And then, edit the following vars:
+es_host: ***
+es_port: ***
+es_username: ***
+es_password: ***
+run_every: ***
+buffer_time: ***
+
+# 3. ElastAlert Rules
+$ mkdir rules/
+$ cp rules.example/*.yaml.example rules/
+$ cd rules/
+$ cp ***.yaml.example ***.yaml
+$ vi ***.yaml
+# And then, edit the following vars:
+es_host: ***
+es_port: ***
+es_username: ***
+es_password: ***
+timeframe: ***
+filter: ***
+index: basic_log-*
+alert_subject: "<@slack-user-id>alert-subject"
+slack_webhook_url: 'https://hooks.slack.com/services/***'
+slack_channel_override: "#slack-channel-name"
+slack_title: "<@slack-user-id>slack-title"
+kibana_discover_app_url: "http://kibana.url/app/discover#/"
+kibana_discover_index_pattern_id: "kibana-index-id"
+kibana_discover_version: "7.16"
+```
+
 ## Docker and Kubernetes
 
 ElastAlert 2 is well-suited to being run as a microservice, and is available

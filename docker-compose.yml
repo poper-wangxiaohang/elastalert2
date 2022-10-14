@@ -1,0 +1,17 @@
+version: '2'
+services:
+    elastalert:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        volumes:
+            - ./elastalert.yaml:/opt/elastalert/config.yaml
+            - ./rules:/opt/elastalert/rules
+        environment:
+            ES_HOST: "${ES_HOST}"
+            ES_PORT: "${ES_PORT}"
+            ES_USE_SSL: "${ES_USE_SSL}"
+            ES_USERNAME: "${ES_USERNAME}"
+            ES_PASSWORD: "${ES_PASSWORD}"
+            ES_URL_PREFIX: "${ES_URL_PREFIX}"
+        restart: always

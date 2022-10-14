@@ -1,0 +1,293 @@
+# Alert when the rate of events exceeds a threshold
+
+# (Optional)
+# Elasticsearch host
+# The hostname of the Elasticsearch cluster the rule will use to query. (Required, string, no default)
+# The environment variable ES_HOST will override this field.
+# For multiple host Elasticsearch clusters see es_hosts parameter.
+# es_host: elasticsearch.example.com
+es_host: ***
+
+# (Optional)
+# Elasticsearch port
+# The port of the Elasticsearch cluster. (Required, number, no default)
+# The environment variable ES_PORT will override this field.
+# es_port: 14900
+es_port: 9200
+
+# (OptionaL) Connect with SSL to Elasticsearch
+# Whether or not to connect to es_host using TLS. (Optional, boolean, default False)
+# The environment variable ES_USE_SSL will override this field.
+# use_ssl: True
+use_ssl: False
+
+# (Optional) basic-auth username and password for Elasticsearch
+# basic-auth username for connecting to es_host. (Optional, string, no default)
+# The environment variable ES_USERNAME will override this field.
+#es_username: some_username
+# basic-auth password for connecting to es_host. (Optional, string, no default)
+# The environment variable ES_PASSWORD will override this field.
+#es_password: some_password
+es_username: ***
+es_password: ***
+
+# (Required)
+# Rule name, must be unique
+# name: Example frequency rule
+name: "Basic Log Frequency Alert Rule"
+
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+type: frequency
+# type: "frequency"
+
+# (Required)
+# Index to search, wildcard supported
+# index: logstash-*
+# index: "comiru-*"
+# index: "basic_log-*"
+index: basic_log-*
+
+# (Required, frequency specific)
+# Alert when this many documents matching the query occur within a timeframe
+# num_events: 50
+num_events: 60
+
+# (Required, frequency specific)
+# num_events must occur within this amount of time to trigger an alert
+# The time period in which the number of unique values will be counted.
+timeframe:
+#  hours: 4
+  minutes: 1
+
+# (Required)
+# A list of Elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
+#filter:
+#  - term:
+#      some_field: "some_value"
+filter:
+  - query:
+      query_string:
+#        query: "path : *login AND status > 302"
+        query: "@timestamp:*"
+
+# (Required)
+# The alert is use when a match is found
+alert:
+#  - "email"
+  - "slack"
+
+# (required, email specific)
+# a list of email addresses to send alerts to
+email:
+#  - "elastalert@example.com"
+  - "xiaohang.wang@poper.co"
+
+# (Optional)
+# Whether to enable current alert rule. (boolean, default True)
+# is_enabled: True
+is_enabled: True
+
+# (Optional)
+# This option allows you to ignore repeating alerts for a period of time. (time, default: 1 min)
+# This is applied to the time the alert is sent, not to the time of the event.
+# It defaults to one minute, which means that
+# if ElastAlert 2 is run over a large time period which triggers many matches, only the first alert will be sent by default.
+# If you want every alert, set realert to 0 minutes. (Optional, time, default 1 minute)
+realert:
+  minutes: 1
+
+# (Optional)
+# The number of buckets returned per query (int, default 50)
+# When used with use_terms_query, this is the maximum number of terms returned per query. Default is 50.
+# This means that if a new term appears but there are at least 50 terms which appear more frequently, it will not be found.
+terms_size: 50
+
+timestamp_field: "@timestamp"
+
+# (Optional) (string, default iso)
+# One of iso, unix, unix_ms, custom.
+# This option will set the type of @timestamp (or timestamp_field) used to query Elasticsearch.
+# iso will use ISO8601 timestamps, which will work with most Elasticsearch date type field.
+# unix will query using an integer unix (seconds since 1/1/1970) timestamp.
+# unix_ms will use milliseconds unix timestamp.
+# custom allows you to define your own timestamp_format.
+# The default is iso. (Optional, string enum, default iso).
+timestamp_type: "iso"
+
+# (Optional) (boolean, default False)
+# If this is true, ElastAlert 2 will format the index using datetime.strftime for each query.
+use_strftime_index: False
+
+# E-mail subjects, Jira issue summaries, PagerDuty alerts,
+# or any alerter that has a “subject” can be customized by adding an alert_subject that contains a custom summary.
+# It can be further formatted using standard Python formatting syntax:
+# alert_subject: "Issue {0} occurred at {1}"
+alert_subject: "<@slack-user-id> Basic Log Frequency Alert Subject"
+
+# The arguments for the formatter will be fed from the matched objects related to the alert.
+# The field names whose values will be used as the arguments can be passed with alert_subject_args:
+#alert_subject_args:
+#  - "message"
+#  - "@log_name"
+#  - issue.name
+#  - "@timestamp"
+
+alert_text: "Basic Log Frequency Alert Text {}"
+alert_text_type: alert_text_only
+alert_text_args:
+  - "message"
+
+# (Required)
+# The webhook URL that includes your auth data and the ID of the channel (room) you want to post to.
+# You can use a list of URLs to send to multiple channels.
+slack_webhook_url: 'https://hooks.slack.com/services/***'
+
+# (Optional)
+# By default Slack will use your username when posting to the channel.
+# Use this option to change it (free text).
+slack_username_override: "elastalert"
+
+# (Optional)
+# Incoming webhooks have a default channel, but it can be overridden.
+# A public channel can be specified “#other-channel”, and a Direct Message with “@username”.
+slack_channel_override: "#slack-channel-name"
+
+# (Optional)
+# By default ElastAlert 2 will use the :ghost: emoji when posting to the channel.
+# You can use a different emoji per ElastAlert 2 rule.
+# If slack_icon_url_override parameter is provided, emoji is ignored.
+slack_emoji_override: ":kissing_cat:"
+
+# (Optional)
+# By default the alert will be posted with the ‘danger’ color.
+# You can also use ‘good’ or ‘warning’ colors.
+slack_msg_color: "warning"
+
+# (Optional)
+# By default the notification message is escaped ‘none’.
+# You can also use ‘full’.
+slack_parse_override: "none"
+
+# (Optional)
+# Notification message you want to add.
+# slack_text_string: "some customized content."
+slack_text_string: "some customized content."
+
+# (Optional)
+# You can add additional fields to your slack alerts using this field.
+# Specify the title using title and a value for the field using value.
+# Additionally, you can specify whether or not this field should be a short field using short: true.
+#slack_alert_fields:
+#  - title: Host
+#    value: monitor.host
+#    short: true
+#  - title: Status
+#    value: monitor.status
+#    short: true
+#  - title: Zone
+#    value: beat.name
+#    short: true
+
+# (Optional)
+# By default ElastAlert 2 will verify SSL certificate.
+# Set this option to True if you want to ignore SSL errors.
+slack_ignore_ssl_errors: True
+
+# (Optional)
+# Sets a title for the message, this shows up as a blue text at the start of the message
+slack_title: "<@slack-user-id> Basic Log Frequency Alert Title"
+
+# (Required)
+# (boolean, default False)
+# Enables the generation of the kibana_discover_url variable for the Kibana Discover application.
+# This setting requires the following settings are also configured:
+# kibana_discover_app_url
+# kibana_discover_version
+# kibana_discover_index_pattern_id
+# generate_kibana_discover_url: False
+generate_kibana_discover_url: True
+
+# (Optional)
+# The base url of the Kibana application. If not specified, a URL will be constructed using es_host and es_port.
+# This value will be used if generate_kibana_discover_url is true and kibana_discover_app_url is a relative path.
+# (Optional, string, default http://<es_host>:<es_port>/_plugin/kibana/)
+# kibana_url: "http://kibana.url/app/discover#/"
+# kibana_discover_url: "http://kibana.url/app/discover#/"
+
+# (Required)
+# The url of the Kibana Discover application used to generate the kibana_discover_url variable.
+# This value can use $VAR and ${VAR} references to expand environment variables.
+# This value should be relative to the base kibana url defined by kibana_url and will vary depending on your installation.
+# kibana_discover_app_url: app/discover#/
+kibana_discover_app_url: "http://kibana.url/app/discover#/"
+
+# (Optional)
+# The username used to make basic authenticated API requests against Kibana.
+# This value is only used if shorten_kibana_discover_url is true.
+# kibana_username: some_username
+
+# (Optional)
+# The password used to make basic authenticated API requests against Kibana.
+# This value is only used if shorten_kibana_discover_url is true.
+# kibana_password: some_password
+
+# (Required)
+# The id of the index pattern to link to in the Kibana Discover application.
+# These ids are usually generated and can be found in url of the index pattern management page, or by exporting its saved object.
+# comiru-*
+# kibana_discover_index_pattern_id: "kibana-index-id"
+# basic_log-*
+kibana_discover_index_pattern_id: "kibana-index-id"
+
+# (Optional)
+# Specifies the version of the Kibana Discover application.
+# The currently supported versions of Kibana Discover are:
+# 7.0, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10, 7.11, 7.12, 7.13, 7.14, 7.15, 7.16, 7.17
+# 8.0, 8.1, 8.2, 8.3, 8.4
+kibana_discover_version: "7.16"
+
+# (Optional)
+# The offset to the from time of the Kibana Discover link’s time range.
+# The from time is calculated by subtracting this timedelta from the event time.
+# Defaults to 10 minutes.
+kibana_discover_from_timedelta:
+  minutes: 10
+
+# (Optional)
+# The offset to the to time of the Kibana Discover link’s time range.
+# The to time is calculated by adding this timedelta to the event time.
+# Defaults to 10 minutes.
+kibana_discover_to_timedelta:
+  minutes: 10
+
+# (Required)
+# Enables the attachment of the kibana_discover_url to the slack notification.
+# The config generate_kibana_discover_url must also be True in order to generate the url.
+# Defaults to False.
+# slack_attach_kibana_discover_url: False
+slack_attach_kibana_discover_url: True
+
+# (Optional)
+# The color of the Kibana Discover url attachment.
+# Defaults to #ec4b98.
+slack_kibana_discover_color: "#ec4b98"
+
+# (Optional)
+# The title of the Kibana Discover url attachment.
+# Defaults to Discover in Kibana.
+# slack_kibana_discover_title: "Discover in Kibana"
+slack_kibana_discover_title: "Basic Log Frequency Alert Discover in Kibana"
+
+# (Optional)
+# Set this option to True if you want to validate the SSL certificate.
+slack_ca_certs: False
+
+# (Optional)
+# This options allows the rule to override the buffer_time global setting defined in config.yaml.
+# This value is ignored if use_count_query or use_terms_query is true. (Optional, time)
+#buffer_time:
+#  minutes: 15
