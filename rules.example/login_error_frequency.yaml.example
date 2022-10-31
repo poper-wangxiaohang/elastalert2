@@ -52,7 +52,7 @@ index: basic_log-*
 # (Required, frequency specific)
 # Alert when this many documents matching the query occur within a timeframe
 # num_events: 50
-num_events: 5
+num_events: 1
 
 # (Required, frequency specific)
 # num_events must occur within this amount of time to trigger an alert
@@ -60,6 +60,11 @@ num_events: 5
 timeframe:
 #  hours: 4
   minutes: 10
+
+# If true, ElastAlert 2 will poll Elasticsearch using the count api, and not download all of the matching documents.
+# This is useful is you care only about numbers and not the actual data.
+# It should also be used if you expect a large number of query hits, in the order of tens of thousands or more.
+use_count_query: True
 
 # (Required)
 # A list of Elasticsearch filters used for find events
@@ -69,10 +74,10 @@ timeframe:
 #  - term:
 #      some_field: "some_value"
 filter:
-  - query:
-      query_string:
-        query: "path : *login AND status > 302"
-#        query: "@timestamp:*"
+- query:
+    query_string:
+      query: "path:*login AND status>302 AND method:POST"
+#      query: "route:*login AND status>302 AND method:POST"
 
 # (Required)
 # The alert is use when a match is found
@@ -104,7 +109,8 @@ realert:
 # The number of buckets returned per query (int, default 50)
 # When used with use_terms_query, this is the maximum number of terms returned per query. Default is 50.
 # This means that if a new term appears but there are at least 50 terms which appear more frequently, it will not be found.
-terms_size: 50
+#terms_size: 50
+terms_size: 500
 
 timestamp_field: "@timestamp"
 
@@ -136,7 +142,9 @@ alert_subject: "<@slack-user-id> Login Error Frequency Alert Subject"
 #  - issue.name
 #  - "@timestamp"
 
-alert_text: "Login Error Frequency Alert Text {}"
+# alert_text: "Login Error Frequency Alert Text {}"
+# alert_text: "Login Error Frequency Alert Text"
+alert_text: "alert_type: frequency;\n es_index: basic_log-*;\n num_events: 1;\n timeframe: 10 minutes."
 alert_text_type: alert_text_only
 alert_text_args:
   - "message"

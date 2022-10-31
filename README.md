@@ -46,6 +46,13 @@ slack_title: "<@slack-user-id>slack-title"
 kibana_discover_app_url: "http://kibana.url/app/discover#/"
 kibana_discover_index_pattern_id: "kibana-index-id"
 kibana_discover_version: "7.16"
+
+# 4. Debug: Test Your ElastAlert Rules
+$ docker-compose exec elastalert bash
+# debug tool:
+$ elastalert-test-rule --help
+$ elastalert-test-rule rules/some-elastalert-rule.yaml
+$ elastalert-test-rule rules/some-elastalert-rule.yaml --alert
 ```
 
 ## Docker and Kubernetes

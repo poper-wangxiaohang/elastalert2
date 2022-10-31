@@ -15,7 +15,7 @@ es_host: ***
 # es_port: 14900
 es_port: 9200
 
-# (OptionaL) Connect with SSL to Elasticsearch
+# (Optional) Connect with SSL to Elasticsearch
 # Whether or not to connect to es_host using TLS. (Optional, boolean, default False)
 # The environment variable ES_USE_SSL will override this field.
 # use_ssl: True
@@ -59,7 +59,12 @@ num_events: 60
 # The time period in which the number of unique values will be counted.
 timeframe:
 #  hours: 4
-  minutes: 1
+  minutes: 2
+
+# If true, ElastAlert 2 will poll Elasticsearch using the count api, and not download all of the matching documents.
+# This is useful is you care only about numbers and not the actual data.
+# It should also be used if you expect a large number of query hits, in the order of tens of thousands or more.
+use_count_query: True
 
 # (Required)
 # A list of Elasticsearch filters used for find events
@@ -69,10 +74,9 @@ timeframe:
 #  - term:
 #      some_field: "some_value"
 filter:
-  - query:
-      query_string:
-#        query: "path : *login AND status > 302"
-        query: "@timestamp:*"
+- query:
+    query_string:
+      query: "@timestamp:*"
 
 # (Required)
 # The alert is use when a match is found
@@ -98,13 +102,15 @@ is_enabled: True
 # if ElastAlert 2 is run over a large time period which triggers many matches, only the first alert will be sent by default.
 # If you want every alert, set realert to 0 minutes. (Optional, time, default 1 minute)
 realert:
-  minutes: 1
+#  minutes: 1
+  minutes: 5
 
 # (Optional)
 # The number of buckets returned per query (int, default 50)
 # When used with use_terms_query, this is the maximum number of terms returned per query. Default is 50.
 # This means that if a new term appears but there are at least 50 terms which appear more frequently, it will not be found.
-terms_size: 50
+#terms_size: 50
+terms_size: 500
 
 timestamp_field: "@timestamp"
 
@@ -136,7 +142,8 @@ alert_subject: "<@slack-user-id> Basic Log Frequency Alert Subject"
 #  - issue.name
 #  - "@timestamp"
 
-alert_text: "Basic Log Frequency Alert Text {}"
+# alert_text: "Basic Log Frequency Alert Text {}"
+alert_text: "alert_type: frequency;\n es_index: basic_log-*;\n num_events: 60;\n timeframe: 2 minute."
 alert_text_type: alert_text_only
 alert_text_args:
   - "message"
