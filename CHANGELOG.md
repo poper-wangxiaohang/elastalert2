@@ -4,12 +4,26 @@
 - None
 
 ## New features
+- None
+
+## Other changes
+- Upgrade pylint 2.15.3 to 2.15.5, pytest 7.1.3 to 7.2.0, pytest-xdist 2.5.0 to 3.0.2, sphinx 5.2.3 to 5.3.0, tox 3.26.0 to 3.27.0 - [#988](https://github.com/jertel/elastalert2/pull/988) - @nsano-rururu
+- Upgrade to Python 3.11 - [#989](https://github.com/jertel/elastalert2/pull/989) - @jertel
+
+# 2.8.0
+
+## Breaking changes
+- None
+
+## New features
 - Adding the optional timestamp_to_datetime_format_expr rule parameter, allowing custom modification of the Elasticsearch timestamp string before parsing it into datetime. - [#978](https://github.com/jertel/elastalert2/pull/978) - @thpiron
 
 ## Other changes
 - Upgrade pylint 2.15.2 to 2.15.3 and pytest-cov 3.0.0 to 4.0.0 and sphinx 5.1.1 to 5.2.3; Add Google Chat proxy support - [#972](https://github.com/jertel/elastalert2/pull/972) - @nsano-rururu
 - Fix Jira assign issue - [#974](https://github.com/jertel/elastalert2/pull/974) - @jorge-gyant
 - [Kubernetes] Add extraContainers value to helm chart - [#975](https://github.com/jertel/elastalert2/pull/975) - @Kasape
+- [docs] Updated index configuration documentation - [#979](https://github.com/jertel/elastalert2/pull/979) - @nsano-rururu
+- [Kubernetes] Change 'metrics' to 'metrics.enabled' in helm chart documentation - [#981](https://github.com/jertel/elastalert2/pull/981) - @Kasape
 
 # 2.7.0
 
