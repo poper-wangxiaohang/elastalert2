@@ -110,7 +110,7 @@ email:
 #  - "elastalert@example.com"
   - "xiaohang.wang@poper.co"
 
-# (Optional)
+# (Optional) (boolean, default True)
 # Whether to enable current alert rule. (boolean, default True)
 # is_enabled: True
 is_enabled: True
@@ -122,7 +122,8 @@ is_enabled: True
 # if ElastAlert 2 is run over a large time period which triggers many matches, only the first alert will be sent by default.
 # If you want every alert, set realert to 0 minutes. (Optional, time, default 1 minute)
 realert:
-  minutes: 1
+#  minutes: 1
+  minutes: 5
 
 # (Optional)
 # The number of buckets returned per query (int, default 50)

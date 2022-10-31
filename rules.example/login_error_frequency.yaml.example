@@ -91,7 +91,7 @@ email:
 #  - "elastalert@example.com"
   - "xiaohang.wang@poper.co"
 
-# (Optional)
+# (Optional) (boolean, default True)
 # Whether to enable current alert rule. (boolean, default True)
 # is_enabled: True
 is_enabled: True

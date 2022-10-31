@@ -1,0 +1,102 @@
+# Alert when the rate of events exceeds a threshold
+
+# (Required)
+name: "Login Error Frequency Alert Rule"
+
+# (Required)
+type: frequency
+
+# (Required)
+index: basic_log-*
+
+# (Required, frequency specific)
+num_events: 1
+
+# (Required, frequency specific)
+timeframe:
+#  hours: 4
+  minutes: 10
+
+use_count_query: True
+
+# (Required)
+#filter:
+#  - term:
+#      some_field: "some_value"
+filter:
+- query:
+    query_string:
+      query: "path:*login AND status>302 AND method:POST"
+#      query: "route:*login AND status>302 AND method:POST"
+
+# (Required)
+alert:
+#  - "email"
+  - "slack"
+
+# (required, email specific)
+email:
+#  - "elastalert@example.com"
+  - "xiaohang.wang@poper.co"
+
+# (Optional)
+realert:
+  minutes: 1
+
+# (Optional)
+#terms_size: 50
+terms_size: 500
+
+timestamp_field: "@timestamp"
+
+# (Optional) (string, default iso)
+timestamp_type: "iso"
+
+# (Optional) (boolean, default False)
+use_strftime_index: False
+
+# E-mail subjects
+alert_subject: "<@slack-user-id> Login Error Frequency Alert Subject"
+
+# alert_text: "Login Error Frequency Alert Text {}"
+# alert_text: "Login Error Frequency Alert Text"
+alert_text: "alert_type: frequency;\n es_index: basic_log-*;\n num_events: 1;\n timeframe: 10 minutes."
+alert_text_type: alert_text_only
+alert_text_args:
+  - "message"
+
+# (Required)
+slack_webhook_url: 'https://hooks.slack.com/services/***'
+
+# (Optional)
+slack_channel_override: "#slack-channel-name"
+
+# (Optional)
+slack_ignore_ssl_errors: True
+
+# (Optional)
+slack_title: "<@slack-user-id> Login Error Frequency Alert Title"
+
+# (Required) (boolean, default False)
+generate_kibana_discover_url: True
+
+# (Required)
+kibana_discover_app_url: "http://kibana.url/app/discover#/"
+
+# (Required)
+# basic_log-*
+kibana_discover_index_pattern_id: "kibana-index-id"
+
+# (Optional)
+kibana_discover_from_timedelta:
+  minutes: 10
+
+# (Optional)
+kibana_discover_to_timedelta:
+  minutes: 10
+
+# (Required)
+slack_attach_kibana_discover_url: True
+
+# (Optional)
+slack_kibana_discover_title: "Login Error Frequency Alert Discover in Kibana"
